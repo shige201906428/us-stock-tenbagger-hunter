@@ -3,258 +3,134 @@
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Market Hunter</title>
+    <title>Tenbagger Simulation Hunter</title>
     <style>
-        body { font-family: sans-serif; padding: 20px; background: #f3f4f6; }
-        .container { background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }
-        th, td { padding: 12px; border-bottom: 1px solid #eee; text-align: left; }
-        .tv-btn { text-decoration: none; font-weight: bold; padding: 4px 8px; border-radius: 6px; font-size: 11px; display: inline-block; }
-        .detail { background: #1d4ed8; color: white; }
-        .chart { border: 1px solid #1d4ed8; color: #1d4ed8; margin-left: 4px; }
+        body { font-family: sans-serif; margin: 0; padding: 20px; background: #f4f7f6; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #1e3a8a; font-size: 24px; }
+        .meta { font-size: 13px; color: #64748b; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 13px; }
+        th { background: #f8fafc; font-weight: bold; }
+        tr:hover { background: #f1f5f9; }
+        .tv-btn { text-decoration: none; font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 11px; display: inline-block; }
+        .detail { background: #2563eb; color: white; }
+        .chart { border: 1px solid #2563eb; color: #2563eb; margin-left: 4px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Dynamic Tenbagger Hunter 1000</h1>
-        <p>Last Update: 2026-05-16 06:14:00 (UTC) | Scanned: 1,000 | Found: 22</p>
-        <p style="font-size:12px; color:gray;">*Wikipediaがブロックされたため、動的生成リストでスキャンしています。</p>
-        <table border="1" class="dataframe">
+        <h1>🚀 Tenbagger Simulation Hunter</h1>
+        <div class="meta">Last Update: 2026-05-16 06:23:48 (UTC) | Scanned: 1,000 | Found: 9</div>
+        <p style="font-size:12px; color:#ef4444;">※1Yr Perf: 1年前にこの銘柄を条件で見つけて買っていた場合の現在までの騰落率</p>
+        <div style="overflow-x: auto;">
+            <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th>TradingView</th>
       <th>Symbol</th>
       <th>Name</th>
-      <th>Sector</th>
       <th>Growth</th>
       <th>PSR</th>
       <th>MarketCap</th>
       <th>Price</th>
+      <th>1Yr Perf</th>
     </tr>
   </thead>
   <tbody>
     <tr>
-      <td><a href="https://www.tradingview.com/symbols/TGS/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=TGS" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>TGS</td>
-      <td>Transportadora de Gas del Sur S</td>
-      <td>Energy</td>
-      <td>41.30%</td>
-      <td>0.00</td>
-      <td>$4429.2M</td>
-      <td>$29.42</td>
+      <td><a href="https://www.tradingview.com/symbols/AIR/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=AIR" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>AIR</td>
+      <td>AAR Corp.</td>
+      <td>24.60%</td>
+      <td>1.33</td>
+      <td>$4157.4M</td>
+      <td>$104.55</td>
+      <td>+66.80%</td>
     </tr>
     <tr>
-      <td><a href="https://www.tradingview.com/symbols/RUN/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=RUN" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>RUN</td>
-      <td>Sunrun Inc.</td>
-      <td>Technology</td>
-      <td>43.20%</td>
-      <td>1.05</td>
-      <td>$3337.3M</td>
-      <td>$13.99</td>
+      <td><a href="https://www.tradingview.com/symbols/DEC/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=DEC" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>DEC</td>
+      <td>Diversified Energy Company</td>
+      <td>66.00%</td>
+      <td>0.63</td>
+      <td>$1163.0M</td>
+      <td>$16.08</td>
+      <td>+26.95%</td>
     </tr>
     <tr>
-      <td><a href="https://www.tradingview.com/symbols/GSL/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=GSL" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>GSL</td>
-      <td>Global Ship Lease Inc New</td>
-      <td>Industrials</td>
-      <td>3.30%</td>
-      <td>1.96</td>
-      <td>$1472.4M</td>
-      <td>$40.86</td>
+      <td><a href="https://www.tradingview.com/symbols/ETG/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=ETG" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>ETG</td>
+      <td>Eaton Vance Tax-Advantaged Glob</td>
+      <td>44.20%</td>
+      <td>19.70</td>
+      <td>$1736.3M</td>
+      <td>$22.75</td>
+      <td>+22.60%</td>
     </tr>
     <tr>
-      <td><a href="https://www.tradingview.com/symbols/BILL/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=BILL" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>BILL</td>
-      <td>BILL Holdings, Inc.</td>
-      <td>Technology</td>
-      <td>13.50%</td>
-      <td>2.49</td>
-      <td>$3990.8M</td>
-      <td>$40.07</td>
+      <td><a href="https://www.tradingview.com/symbols/CTO/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=CTO" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>CTO</td>
+      <td>CTO Realty Growth, Inc.</td>
+      <td>15.00%</td>
+      <td>4.36</td>
+      <td>$675.0M</td>
+      <td>$19.98</td>
+      <td>+17.93%</td>
     </tr>
     <tr>
-      <td><a href="https://www.tradingview.com/symbols/CCB/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=CCB" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>CCB</td>
-      <td>Coastal Financial Corporation</td>
-      <td>Financial Services</td>
-      <td>17.00%</td>
-      <td>2.87</td>
-      <td>$1043.2M</td>
-      <td>$68.41</td>
+      <td><a href="https://www.tradingview.com/symbols/HYT/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=HYT" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>HYT</td>
+      <td>Blackrock Corporate High Yield</td>
+      <td>4.10%</td>
+      <td>9.26</td>
+      <td>$1381.0M</td>
+      <td>$8.47</td>
+      <td>-2.81%</td>
     </tr>
     <tr>
-      <td><a href="https://www.tradingview.com/symbols/WIW/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=WIW" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>WIW</td>
-      <td>Western Asset Inflation-Linked</td>
-      <td>Financial Services</td>
-      <td>24.30%</td>
-      <td>12.75</td>
-      <td>$519.5M</td>
-      <td>$8.49</td>
+      <td><a href="https://www.tradingview.com/symbols/KFY/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=KFY" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>KFY</td>
+      <td>Korn Ferry</td>
+      <td>7.30%</td>
+      <td>1.16</td>
+      <td>$3310.4M</td>
+      <td>$63.8</td>
+      <td>-4.05%</td>
+    </tr>
+    <tr>
+      <td><a href="https://www.tradingview.com/symbols/MQ/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=MQ" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>MQ</td>
+      <td>Marqeta, Inc.</td>
+      <td>19.20%</td>
+      <td>2.48</td>
+      <td>$1615.6M</td>
+      <td>$3.81</td>
+      <td>-24.40%</td>
     </tr>
     <tr>
       <td><a href="https://www.tradingview.com/symbols/UPST/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=UPST" target="_blank" class="tv-btn chart">📈</a></td>
       <td>UPST</td>
       <td>Upstart Holdings, Inc.</td>
-      <td>Financial Services</td>
       <td>44.60%</td>
       <td>2.41</td>
       <td>$2824.4M</td>
       <td>$29.51</td>
+      <td>-38.62%</td>
     </tr>
     <tr>
-      <td><a href="https://www.tradingview.com/symbols/MTX/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=MTX" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>MTX</td>
-      <td>Minerals Technologies Inc.</td>
-      <td>Basic Materials</td>
-      <td>11.20%</td>
-      <td>1.11</td>
-      <td>$2365.3M</td>
-      <td>$76.28</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/ECX/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=ECX" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>ECX</td>
-      <td>ECARX Holdings Inc.</td>
-      <td>Consumer Cyclical</td>
-      <td>12.90%</td>
-      <td>0.49</td>
-      <td>$415.4M</td>
-      <td>$1.09</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/KRMD/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=KRMD" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>KRMD</td>
-      <td>KORU Medical Systems, Inc.</td>
-      <td>Healthcare</td>
-      <td>22.10%</td>
-      <td>4.14</td>
-      <td>$179.1M</td>
-      <td>$3.9</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/GTLB/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=GTLB" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>GTLB</td>
-      <td>GitLab Inc.</td>
-      <td>Technology</td>
-      <td>23.20%</td>
-      <td>4.18</td>
-      <td>$3995.0M</td>
-      <td>$23.66</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/LCID/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=LCID" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>LCID</td>
-      <td>Lucid Group, Inc.</td>
-      <td>Consumer Cyclical</td>
-      <td>20.20%</td>
-      <td>1.68</td>
-      <td>$2357.2M</td>
-      <td>$6.04</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/VVX/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=VVX" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>VVX</td>
-      <td>V2X, Inc.</td>
-      <td>Industrials</td>
-      <td>23.40%</td>
-      <td>0.46</td>
-      <td>$2172.0M</td>
-      <td>$69.37</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/UTZ/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=UTZ" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>UTZ</td>
-      <td>Utz Brands Inc</td>
-      <td>Consumer Defensive</td>
-      <td>2.60%</td>
-      <td>0.43</td>
-      <td>$623.3M</td>
-      <td>$7.04</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/SXT/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=SXT" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>SXT</td>
-      <td>Sensient Technologies Corporati</td>
-      <td>Basic Materials</td>
-      <td>11.10%</td>
-      <td>2.93</td>
-      <td>$4849.9M</td>
-      <td>$113.93</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/AMC/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=AMC" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>AMC</td>
-      <td>AMC Entertainment Holdings, Inc</td>
-      <td>Communication Services</td>
-      <td>21.20%</td>
-      <td>0.19</td>
-      <td>$965.3M</td>
-      <td>$1.28</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/DKL/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=DKL" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>DKL</td>
-      <td>Delek Logistics Partners, L.P.</td>
-      <td>Energy</td>
-      <td>19.00%</td>
-      <td>2.59</td>
-      <td>$2748.8M</td>
-      <td>$51.7</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/ELE/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=ELE" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>ELE</td>
-      <td>Elemental Royalty Corporation</td>
-      <td>Basic Materials</td>
-      <td>109.00%</td>
-      <td>19.23</td>
-      <td>$1083.3M</td>
-      <td>$16.86</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/SPB/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=SPB" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>SPB</td>
-      <td>Spectrum Brands Holdings, Inc.</td>
-      <td>Consumer Defensive</td>
-      <td>4.90%</td>
-      <td>0.63</td>
-      <td>$1787.8M</td>
-      <td>$77.08</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/PRK/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=PRK" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>PRK</td>
-      <td>Park National Corporation</td>
-      <td>Financial Services</td>
-      <td>21.20%</td>
-      <td>5.17</td>
-      <td>$2964.9M</td>
-      <td>$163.84</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/HAE/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=HAE" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>HAE</td>
-      <td>Haemonetics Corporation</td>
-      <td>Healthcare</td>
-      <td>4.80%</td>
-      <td>1.96</td>
-      <td>$2615.9M</td>
-      <td>$56.29</td>
-    </tr>
-    <tr>
-      <td><a href="https://www.tradingview.com/symbols/MPX/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=MPX" target="_blank" class="tv-btn chart">📈</a></td>
-      <td>MPX</td>
-      <td>Marine Products Corporation</td>
-      <td>Consumer Cyclical</td>
-      <td>12.80%</td>
-      <td>1.11</td>
-      <td>$280.0M</td>
-      <td>$8.18</td>
+      <td><a href="https://www.tradingview.com/symbols/LRN/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=LRN" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>LRN</td>
+      <td>Stride, Inc.</td>
+      <td>2.70%</td>
+      <td>1.48</td>
+      <td>$3754.5M</td>
+      <td>$88.29</td>
+      <td>-42.85%</td>
     </tr>
   </tbody>
 </table>
+        </div>
     </div>
 </body>
 </html>
