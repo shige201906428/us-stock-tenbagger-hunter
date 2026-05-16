@@ -1,1 +1,25 @@
+name: Daily Stock Scan
 
+on:
+  schedule:
+    - cron: '0 0 * * *' # 日本時間 AM9:00
+  workflow_dispatch:  # ← これを入れると「Run workflow」ボタンが出ます
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run screener
+        run: python scripts/screener.py  # ← パスが合っているか確認
