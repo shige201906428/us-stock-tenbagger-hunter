@@ -1,77 +1,90 @@
 import yfinance as yf
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import os
 import concurrent.futures
 import random
 import string
+import requests
+import io
 
-def get_market_tickers():
-    """外部サイトに頼らず、主要なティッカーとランダム生成を組み合わせて1000社確保する"""
-    # 1. 確実に存在する「成長株・中小型株」のベースリスト
-    base_list = [
-        "MNDY", "GTLB", "DOCN", "IOT", "S", "PLTR", "CELH", "DUOL", "APP", "UPST",
-        "AFRM", "PATH", "SNOW", "RKLB", "IONQ", "SOFI", "U", "MQ", "TOST", "BILL",
-        "ALB", "RUN", "ENPH", "SEDG", "CHPT", "BE", "QS", "LCID", "RIVN", "DKNG",
-        "DASH", "ABNB", "COIN", "HOOD", "RBLX", "TEAM", "NET", "OKTA", "DDOG", "ZS"
-    ]
+def get_robust_ticker_list():
+    """外部サイトのブロックを回避しつつ、1000社以上の候補を確保する"""
+    # 1. 成長株・注目株のベースリスト
+    base_list = ["MNDY", "GTLB", "DOCN", "IOT", "S", "PLTR", "CELH", "DUOL", "APP", "UPST",
+                 "AFRM", "PATH", "SNOW", "RKLB", "IONQ", "SOFI", "U", "MQ", "TOST", "BILL",
+                 "DASH", "ABNB", "COIN", "HOOD", "RBLX", "TEAM", "NET", "OKTA", "DDOG", "ZS"]
     
-    # 2. 成長株が多いNASDAQのティッカーパターンをランダム生成して「生きた銘柄」を探す
-    # (外部のHTMLパースが失敗しても、yfinanceのAPIが生きていればこれでデータが取れる)
-    print("Generating dynamic ticker list to bypass blocks...")
+    # 2. Wikipedia (User-Agent偽装で再トライ)
+    try:
+        url = "https://en.wikipedia.org/wiki/List_of_Russell_2000_companies"
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'}
+        resp = requests.get(url, headers=headers, timeout=10)
+        tables = pd.read_html(io.StringIO(resp.text))
+        wiki_tickers = tables[2]['Ticker'].tolist()
+        base_list.extend([str(t).replace('.', '-') for t in wiki_tickers])
+    except:
+        print("Wikipedia blocked. Using dynamic generation...")
+    
+    # 3. ランダム生成で1500社分追加 (404エラーは出るが、網羅性を優先)
     chars = string.ascii_uppercase
-    random_extra = []
-    while len(random_extra) < 1500:
-        length = random.choice([3, 4])
-        t = ''.join(random.choices(chars, k=length))
-        if t not in base_list:
-            random_extra.append(t)
-            
-    return base_list + random_extra
+    for _ in range(1500):
+        base_list.append(''.join(random.choices(chars, k=random.choice([3, 4]))))
+    
+    return list(set(base_list))
 
 def process_stock(symbol):
+    """1年前の価格と比較してパフォーマンスを算出する"""
     try:
-        # 存在確認も兼ねてfast_infoを使用
         stock = yf.Ticker(symbol)
         info = stock.info
-        
-        # 存在しないティッカーやデータが空のものは即除外
         if not info or 'marketCap' not in info: return None
 
+        # フィルタ条件：時価総額 $50M - $5B かつ 売上成長 > 0
         mcap = info.get('marketCap', 0)
-        # 10バガー条件：時価総額 $50M - $5B
-        if not (50_000_000 <= mcap <= 5_000_000_000): return None
-
         growth = info.get('revenueGrowth', 0)
-        # 成長率がプラスの銘柄のみ
-        if growth is None or growth <= 0: return None
+        if not (50_000_000 <= mcap <= 5_000_000_000) or (growth is None or growth <= 0):
+            return None
+
+        # --- 1年前の答え合わせロジック ---
+        current_price = info.get('currentPrice')
+        one_year_ago = (datetime.now() - timedelta(days=365)).strftime('%Y-%m-%d')
+        hist = stock.history(start=one_year_ago, period="5d")
+        
+        perf_val = 0.0 # ソート用
+        perf_str = "N/A"
+        
+        if not hist.empty and current_price:
+            past_price = hist['Close'].iloc[0]
+            change = (current_price - past_price) / past_price
+            perf_val = change
+            perf_str = f"{change:+.2%}"
 
         return {
             "Symbol": symbol,
             "Name": info.get('shortName', 'N/A'),
-            "Sector": info.get('sector', 'N/A'),
             "Growth": f"{growth:.2%}",
             "PSR": f"{info.get('priceToSalesTrailing12Months', 0):.2f}",
             "MarketCap": f"${mcap/1e6:.1f}M",
-            "Price": f"${info.get('currentPrice', 0)}"
+            "Price": f"${current_price}",
+            "1Yr Perf": perf_str,
+            "perf_val": perf_val # 内部ソート用
         }
     except:
         return None
 
 # --- メイン処理 ---
-all_possible = get_market_tickers()
-# 2000以上の候補から1000個を試行
-target_tickers = random.sample(all_possible, 1000)
+all_tickers = get_robust_ticker_list()
+target_tickers = random.sample(all_tickers, min(len(all_tickers), 1000))
 
-print(f"🚀 Global Market Scan Start: {len(target_tickers)} tickers.")
+print(f"🚀 Simulation Scan Start: {len(target_tickers)} tickers.")
 
-found_stocks = []
-# 並列実行（yfinanceのAPI自体がブロックされていなければ、これで数百件ヒットする）
 with concurrent.futures.ThreadPoolExecutor(max_workers=20) as executor:
     results = list(executor.map(process_stock, target_tickers))
 
 found_stocks = [r for r in results if r is not None]
-df = pd.DataFrame(found_stocks)
+# パフォーマンスが良い順に並び替え
+df = pd.DataFrame(found_stocks).sort_values(by="perf_val", ascending=False)
 
 # --- TradingView リンク生成 ---
 def make_tv_links(symbol):
@@ -81,31 +94,38 @@ def make_tv_links(symbol):
 
 if not df.empty:
     df.insert(0, 'TradingView', df['Symbol'].apply(make_tv_links))
+    df = df.drop(columns=['perf_val']) # ソート用カラムを削除
 
-# --- HTML出力 ---
+# --- HTML出力 (デザイン強化) ---
 update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 html_content = f"""
 <!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
-    <title>Dynamic Market Hunter</title>
+    <title>Tenbagger Simulation Hunter</title>
     <style>
-        body {{ font-family: sans-serif; padding: 20px; background: #f3f4f6; }}
-        .container {{ background: white; padding: 30px; border-radius: 16px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
-        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 14px; }}
-        th, td {{ padding: 12px; border-bottom: 1px solid #eee; text-align: left; }}
-        .tv-btn {{ text-decoration: none; font-weight: bold; padding: 4px 8px; border-radius: 6px; font-size: 11px; display: inline-block; }}
-        .detail {{ background: #1d4ed8; color: white; }}
-        .chart {{ border: 1px solid #1d4ed8; color: #1d4ed8; margin-left: 4px; }}
+        body {{ font-family: sans-serif; margin: 0; padding: 20px; background: #f4f7f6; }}
+        .container {{ max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }}
+        h1 {{ color: #1e3a8a; font-size: 24px; }}
+        .meta {{ font-size: 13px; color: #64748b; margin-bottom: 20px; }}
+        table {{ width: 100%; border-collapse: collapse; }}
+        th, td {{ padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; font-size: 13px; }}
+        th {{ background: #f8fafc; font-weight: bold; }}
+        tr:hover {{ background: #f1f5f9; }}
+        .tv-btn {{ text-decoration: none; font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 11px; display: inline-block; }}
+        .detail {{ background: #2563eb; color: white; }}
+        .chart {{ border: 1px solid #2563eb; color: #2563eb; margin-left: 4px; }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Dynamic Tenbagger Hunter 1000</h1>
-        <p>Last Update: {update_time} (UTC) | Scanned: 1,000 | Found: {len(found_stocks)}</p>
-        <p style="font-size:12px; color:gray;">*Wikipediaがブロックされたため、動的生成リストでスキャンしています。</p>
-        {df.to_html(index=False, escape=False) if not df.empty else "<p>No candidates found.</p>"}
+        <h1>🚀 Tenbagger Simulation Hunter</h1>
+        <div class="meta">Last Update: {update_time} (UTC) | Scanned: 1,000 | Found: {len(found_stocks)}</div>
+        <p style="font-size:12px; color:#ef4444;">※1Yr Perf: 1年前にこの銘柄を条件で見つけて買っていた場合の現在までの騰落率</p>
+        <div style="overflow-x: auto;">
+            {df.to_html(index=False, escape=False) if not df.empty else "<p>No candidates found.</p>"}
+        </div>
     </div>
 </body>
 </html>
@@ -114,5 +134,3 @@ html_content = f"""
 current_dir = os.path.dirname(os.path.abspath(__file__))
 with open(os.path.join(current_dir, "..", "index.html"), "w", encoding="utf-8") as f:
     f.write(html_content)
-
-print(f"Update Complete. Found: {len(found_stocks)}")
