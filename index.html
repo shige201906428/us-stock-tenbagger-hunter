@@ -4,35 +4,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tenbagger Hunter Pro</title>
+    <title>Tenbagger Hunter Pro Max</title>
     <style>
-        body { font-family: 'Inter', -apple-system, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; color: #333; }
-        .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
-        h1 { color: #2962ff; font-size: 24px; margin-bottom: 5px; display: flex; align-items: center; }
-        .update-time { color: #666; font-size: 13px; margin-bottom: 20px; }
+        body { font-family: 'Inter', sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
+        h1 { color: #1e293b; font-size: 26px; border-left: 6px solid #2563eb; padding-left: 15px; }
+        .update-time { color: #64748b; font-size: 13px; margin-bottom: 20px; }
         table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; }
-        th { background-color: #f8f9fb; color: #555; font-weight: 600; font-size: 12px; text-transform: uppercase; }
-        tr:hover { background-color: #f0f7ff; }
-        .tv-link { 
-            color: #2962ff; 
+        th, td { padding: 12px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }
+        th { background-color: #f8fafc; color: #475569; font-weight: 600; font-size: 12px; }
+        tr:hover { background-color: #f1f5f9; }
+        
+        /* リンクボタンのデザイン */
+        .tv-btn { 
             text-decoration: none; 
+            font-size: 12px; 
             font-weight: bold; 
-            padding: 2px 6px; 
+            padding: 4px 8px; 
             border-radius: 4px; 
-            border: 1px solid #2962ff;
+            display: inline-block;
         }
-        .tv-link:hover { background-color: #2962ff; color: white; }
+        .overview { background-color: #2563eb; color: white; }
+        .chart { background-color: #f1f5f9; color: #2563eb; border: 1px solid #2563eb; }
+        .overview:hover { background-color: #1d4ed8; }
+        .chart:hover { background-color: #2563eb; color: white; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🚀 米国株 10倍株スクリーナー</h1>
-        <p class="update-time">最終更新(UTC): 2026-05-16 05:05:47 | スキャン対象: Russell 2000 (上位500社)</p>
+        <p class="update-time">最終更新(UTC): 2026-05-16 05:10:03 | 条件: $50M-$5B / 成長率5%↑ / 価格$1↑</p>
         <div style="overflow-x: auto;">
             <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
+      <th>TradingView</th>
       <th>Symbol</th>
       <th>Name</th>
       <th>Sector</th>
@@ -44,7 +50,8 @@
   </thead>
   <tbody>
     <tr>
-      <td><a href="https://www.tradingview.com/chart/?symbol=MNDY" target="_blank" class="tv-link">MNDY</a></td>
+      <td><a href="https://jp.tradingview.com/symbols/AMEX-MNDY/" target="_blank" class="tv-btn overview">概要</a> <a href="https://jp.tradingview.com/chart/?symbol=MNDY" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>MNDY</td>
       <td>monday.com Ltd.</td>
       <td>Technology</td>
       <td>26.75%</td>
@@ -53,7 +60,8 @@
       <td>$71.97</td>
     </tr>
     <tr>
-      <td><a href="https://www.tradingview.com/chart/?symbol=GTLB" target="_blank" class="tv-link">GTLB</a></td>
+      <td><a href="https://jp.tradingview.com/symbols/AMEX-GTLB/" target="_blank" class="tv-btn overview">概要</a> <a href="https://jp.tradingview.com/chart/?symbol=GTLB" target="_blank" class="tv-btn chart">📈</a></td>
+      <td>GTLB</td>
       <td>GitLab Inc.</td>
       <td>Technology</td>
       <td>25.81%</td>
@@ -64,9 +72,6 @@
   </tbody>
 </table>
         </div>
-        <p style="margin-top:20px; font-size:11px; color:#999;">
-            条件: $50M-$5B / 成長率5%↑ / 価格$1↑ / リンク先: TradingView
-        </p>
     </div>
 </body>
 </html>
