@@ -3,27 +3,55 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Russell 2000 Hunter - Relaxed</title>
+    <title>Wide Range Hunter</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, sans-serif; margin: 30px; background-color: #f8fbfd; }
-        .container { background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }
-        h1 { color: #27ae60; border-left: 6px solid #27ae60; padding-left: 15px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 25px; }
-        th, td { padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; }
-        th { background-color: #27ae60; color: white; }
-        tr:hover { background-color: #f1fef6; }
-        .symbol { font-weight: bold; color: #2c3e50; }
-        .update-time { font-size: 0.85em; color: #95a5a6; }
+        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #fcfcfc; }
+        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
+        h1 { color: #8e44ad; border-bottom: 2px solid #8e44ad; padding-bottom: 5px; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
+        th, td { padding: 10px; border-bottom: 1px solid #f0f0f0; text-align: left; }
+        th { background-color: #8e44ad; color: white; }
+        tr:hover { background-color: #f5f0f9; }
+        .symbol { font-weight: bold; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>米国中小型株スクリーナー (Russell 2000 / 緩和版)</h1>
-        <p class="update-time">更新日時: 2026-05-16 04:58:35 (UTC) | 対象: Russell 2000上位500社</p>
-        <p>該当なし。条件をさらに調整してください。</p>
-        <p style="margin-top:20px; font-size:0.8em; color:#bdc3c7;">
-            ※条件: 時価総額 $100M-$3B / 売上成長率 15%↑ / PSR 20↓
-        </p>
+        <h1>米国株 広域スクリーナー (Russell 2000 超緩和版)</h1>
+        <p style="color:#7f8c8d;">更新日時: 2026-05-16 05:02:33 (UTC) | 条件: $50M-$5B / 成長 5%↑ / $1↑</p>
+        <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>Symbol</th>
+      <th>Name</th>
+      <th>Sector</th>
+      <th>Growth</th>
+      <th>PSR</th>
+      <th>MarketCap</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>MNDY</td>
+      <td>monday.com Ltd.</td>
+      <td>Technology</td>
+      <td>26.75%</td>
+      <td>2.85</td>
+      <td>$3710.2M</td>
+      <td>$71.97</td>
+    </tr>
+    <tr>
+      <td>GTLB</td>
+      <td>GitLab Inc.</td>
+      <td>Technology</td>
+      <td>25.81%</td>
+      <td>4.18</td>
+      <td>$3995.0M</td>
+      <td>$23.66</td>
+    </tr>
+  </tbody>
+</table>
     </div>
 </body>
 </html>
