@@ -3,26 +3,65 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Daily Random Hunter 1000</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Tenbagger Hunter</title>
     <style>
-        body { font-family: 'Inter', sans-serif; margin: 0; padding: 20px; background: #f4f7f6; }
-        .container { max-width: 1200px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        h1 { color: #1e293b; font-size: 24px; }
-        .meta { font-size: 13px; color: #64748b; margin-bottom: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 12px; border-bottom: 1px solid #e2e8f0; text-align: left; }
-        th { background: #f8fafc; color: #475569; font-size: 12px; }
-        .tv-btn { text-decoration: none; font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 11px; display: inline-block; }
-        .detail { background: #2563eb; color: white; }
-        .chart { border: 1px solid #2563eb; color: #2563eb; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; margin: 0; padding: 20px; background: #f8f9fa; color: #212529; }
+        .container { max-width: 1200px; margin: auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        h1 { color: #0d6efd; font-size: 28px; margin-bottom: 5px; }
+        .meta { font-size: 13px; color: #6c757d; margin-bottom: 20px; border-bottom: 1px solid #dee2e6; padding-bottom: 10px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 12px; border-bottom: 1px solid #dee2e6; text-align: left; font-size: 14px; }
+        th { background: #f8f9fa; color: #495057; font-weight: 600; text-transform: uppercase; }
+        tr:hover { background: #f1f3f5; }
+        .tv-btn { text-decoration: none; font-weight: bold; padding: 4px 10px; border-radius: 6px; font-size: 12px; display: inline-block; transition: 0.2s; }
+        .detail { background: #0d6efd; color: white; }
+        .chart { border: 1px solid #0d6efd; color: #0d6efd; margin-left: 5px; }
+        .detail:hover { background: #0b5ed7; }
+        .chart:hover { background: #0d6efd; color: white; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>🎲 Daily Random Tenbagger Hunter</h1>
-        <div class="meta">Last Update: 2026-05-16 05:31:14 (UTC) | Today's Sample: 1,000 / 2,000 stocks</div>
+        <div class="meta">Last Update: 2026-05-16 05:35:58 (UTC) | Sample: 1,000 stocks from Russell 2000</div>
         <div style="overflow-x: auto;">
-            <p>No candidates found in today's random sample.</p>
+            <table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th>TradingView</th>
+      <th>Symbol</th>
+      <th>Name</th>
+      <th>Sector</th>
+      <th>Growth</th>
+      <th>PSR</th>
+      <th>MarketCap</th>
+      <th>Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><a href="https://www.tradingview.com/symbols/GTLB/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=GTLB" target="_blank" class="tv-btn chart">📈 Chart</a></td>
+      <td>GTLB</td>
+      <td>GitLab Inc.</td>
+      <td>Technology</td>
+      <td>23.20%</td>
+      <td>4.18</td>
+      <td>$3995.0M</td>
+      <td>$23.66</td>
+    </tr>
+    <tr>
+      <td><a href="https://www.tradingview.com/symbols/MNDY/" target="_blank" class="tv-btn detail">Detail</a> <a href="https://www.tradingview.com/chart/?symbol=MNDY" target="_blank" class="tv-btn chart">📈 Chart</a></td>
+      <td>MNDY</td>
+      <td>monday.com Ltd.</td>
+      <td>Technology</td>
+      <td>24.50%</td>
+      <td>2.85</td>
+      <td>$3710.2M</td>
+      <td>$71.97</td>
+    </tr>
+  </tbody>
+</table>
         </div>
     </div>
 </body>
