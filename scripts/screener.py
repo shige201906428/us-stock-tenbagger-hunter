@@ -20,57 +20,59 @@ def check_tenbagger_potential(symbol):
         stock = yf.Ticker(symbol)
         info = stock.info
         
-        # --- 緩和版スクリーニング条件 ---
+        # --- 超緩和版スクリーニング条件 ---
         
-        # 1. 時価総額 ($100M - $3.0B)
+        # 1. 時価総額 ($50M - $5.0B)
+        # かなり小さなマイクロキャップから、中堅までカバー
         mcap = info.get('marketCap', 0)
-        if not (100_000_000 <= mcap <= 3_000_000_000):
+        if not (50_000_000 <= mcap <= 5_000_000_000):
             return None
 
-        # 2. 売上高成長率 (15%以上に緩和)
+        # 2. 売上高成長率 (5%以上に大幅緩和)
         financials = stock.financials
+        growth_display = "N/A"
         if 'Total Revenue' in financials.index and len(financials.columns) >= 2:
             rev = financials.loc['Total Revenue']
-            # 直近と前年の比較
             growth = (rev.iloc[0] / rev.iloc[1]) - 1
-            if growth < 0.15: 
+            if growth < 0.05: # わずかでも成長していればOK
                 return None
+            growth_display = f"{growth:.2%}"
         else:
             return None
             
-        # 3. PSR (20倍までに緩和)
-        psr = info.get('priceToSalesTrailing12Months', 100)
-        if psr > 20: 
+        # 3. 株価 ($1以上)
+        price = info.get('currentPrice', 0)
+        if price < 1.0:
             return None
 
         return {
             "Symbol": symbol,
             "Name": info.get('shortName', 'N/A'),
             "Sector": info.get('sector', 'N/A'),
-            "Growth": f"{growth:.2%}",
-            "PSR": f"{psr:.2f}",
+            "Growth": growth_display,
+            "PSR": f"{info.get('priceToSalesTrailing12Months', 0):.2f}",
             "MarketCap": f"${mcap/1e6:.1f}M",
-            "Price": f"${info.get('currentPrice', 0)}"
+            "Price": f"${price}"
         }
     except:
         return None
 
 # --- メイン処理 ---
 all_tickers = get_russell_2000_tickers()
-# 実行時間との兼ね合いで、上位500社をスキャン
+# 500社スキャン（ Actionsの制限時間内で最大効率を狙います）
 target_tickers = all_tickers[:500]
 
 found_stocks = []
-print(f"Scanning {len(target_tickers)} Russell 2000 companies with relaxed conditions...")
+print(f"Wide scanning {len(target_tickers)} companies...")
 
 for i, ticker in enumerate(target_tickers):
     result = check_tenbagger_potential(ticker)
     if result:
         found_stocks.append(result)
-        print(f"Match found: {ticker}")
+        print(f"Found: {ticker}")
     
-    if i % 10 == 0:
-        time.sleep(0.3) # サーバー負荷に配慮
+    if i % 15 == 0:
+        time.sleep(0.2)
 
 df = pd.DataFrame(found_stocks)
 
@@ -81,27 +83,23 @@ html_content = f"""
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Russell 2000 Hunter - Relaxed</title>
+    <title>Wide Range Hunter</title>
     <style>
-        body {{ font-family: 'Segoe UI', Tahoma, sans-serif; margin: 30px; background-color: #f8fbfd; }}
-        .container {{ background: white; padding: 25px; border-radius: 15px; box-shadow: 0 10px 20px rgba(0,0,0,0.05); }}
-        h1 {{ color: #27ae60; border-left: 6px solid #27ae60; padding-left: 15px; }}
-        table {{ width: 100%; border-collapse: collapse; margin-top: 25px; }}
-        th, td {{ padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; }}
-        th {{ background-color: #27ae60; color: white; }}
-        tr:hover {{ background-color: #f1fef6; }}
-        .symbol {{ font-weight: bold; color: #2c3e50; }}
-        .update-time {{ font-size: 0.85em; color: #95a5a6; }}
+        body {{ font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #fcfcfc; }}
+        .container {{ background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }}
+        h1 {{ color: #8e44ad; border-bottom: 2px solid #8e44ad; padding-bottom: 5px; }}
+        table {{ width: 100%; border-collapse: collapse; font-size: 0.9em; }}
+        th, td {{ padding: 10px; border-bottom: 1px solid #f0f0f0; text-align: left; }}
+        th {{ background-color: #8e44ad; color: white; }}
+        tr:hover {{ background-color: #f5f0f9; }}
+        .symbol {{ font-weight: bold; }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>米国中小型株スクリーナー (Russell 2000 / 緩和版)</h1>
-        <p class="update-time">更新日時: {update_time} (UTC) | 対象: Russell 2000上位500社</p>
-        {df.to_html(index=False, escape=False) if not df.empty else "<p>該当なし。条件をさらに調整してください。</p>"}
-        <p style="margin-top:20px; font-size:0.8em; color:#bdc3c7;">
-            ※条件: 時価総額 $100M-$3B / 売上成長率 15%↑ / PSR 20↓
-        </p>
+        <h1>米国株 広域スクリーナー (Russell 2000 超緩和版)</h1>
+        <p style="color:#7f8c8d;">更新日時: {update_time} (UTC) | 条件: $50M-$5B / 成長 5%↑ / $1↑</p>
+        {df.to_html(index=False, escape=False) if not df.empty else "<p>該当なし</p>"}
     </div>
 </body>
 </html>
@@ -113,4 +111,4 @@ index_path = os.path.join(current_dir, "..", "index.html")
 with open(index_path, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print("Scan completed successfully.")
+print("Wide scan completed.")
