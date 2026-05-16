@@ -3,23 +3,34 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Wide Range Hunter</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tenbagger Hunter Pro</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; margin: 20px; background-color: #fcfcfc; }
-        .container { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); border: 1px solid #eee; }
-        h1 { color: #8e44ad; border-bottom: 2px solid #8e44ad; padding-bottom: 5px; }
-        table { width: 100%; border-collapse: collapse; font-size: 0.9em; }
-        th, td { padding: 10px; border-bottom: 1px solid #f0f0f0; text-align: left; }
-        th { background-color: #8e44ad; color: white; }
-        tr:hover { background-color: #f5f0f9; }
-        .symbol { font-weight: bold; }
+        body { font-family: 'Inter', -apple-system, sans-serif; margin: 0; padding: 20px; background-color: #f8f9fa; color: #333; }
+        .container { max-width: 1100px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); }
+        h1 { color: #2962ff; font-size: 24px; margin-bottom: 5px; display: flex; align-items: center; }
+        .update-time { color: #666; font-size: 13px; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #eee; text-align: left; }
+        th { background-color: #f8f9fb; color: #555; font-weight: 600; font-size: 12px; text-transform: uppercase; }
+        tr:hover { background-color: #f0f7ff; }
+        .tv-link { 
+            color: #2962ff; 
+            text-decoration: none; 
+            font-weight: bold; 
+            padding: 2px 6px; 
+            border-radius: 4px; 
+            border: 1px solid #2962ff;
+        }
+        .tv-link:hover { background-color: #2962ff; color: white; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>米国株 広域スクリーナー (Russell 2000 超緩和版)</h1>
-        <p style="color:#7f8c8d;">更新日時: 2026-05-16 05:02:33 (UTC) | 条件: $50M-$5B / 成長 5%↑ / $1↑</p>
-        <table border="1" class="dataframe">
+        <h1>🚀 米国株 10倍株スクリーナー</h1>
+        <p class="update-time">最終更新(UTC): 2026-05-16 05:05:47 | スキャン対象: Russell 2000 (上位500社)</p>
+        <div style="overflow-x: auto;">
+            <table border="1" class="dataframe">
   <thead>
     <tr style="text-align: right;">
       <th>Symbol</th>
@@ -33,7 +44,7 @@
   </thead>
   <tbody>
     <tr>
-      <td>MNDY</td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=MNDY" target="_blank" class="tv-link">MNDY</a></td>
       <td>monday.com Ltd.</td>
       <td>Technology</td>
       <td>26.75%</td>
@@ -42,7 +53,7 @@
       <td>$71.97</td>
     </tr>
     <tr>
-      <td>GTLB</td>
+      <td><a href="https://www.tradingview.com/chart/?symbol=GTLB" target="_blank" class="tv-link">GTLB</a></td>
       <td>GitLab Inc.</td>
       <td>Technology</td>
       <td>25.81%</td>
@@ -52,6 +63,10 @@
     </tr>
   </tbody>
 </table>
+        </div>
+        <p style="margin-top:20px; font-size:11px; color:#999;">
+            条件: $50M-$5B / 成長率5%↑ / 価格$1↑ / リンク先: TradingView
+        </p>
     </div>
 </body>
 </html>
