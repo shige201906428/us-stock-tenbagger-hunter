@@ -2,8 +2,8 @@ name: Daily Stock Scan
 
 on:
   schedule:
-    - cron: '0 0 * * *' # 日本時間 AM9:00
-  workflow_dispatch:  # ← これを入れると「Run workflow」ボタンが出ます
+    - cron: '0 0 * * *'
+  workflow_dispatch:
 
 jobs:
   build:
@@ -22,4 +22,4 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run screener
-        run: python scripts/screener.py  # ← パスが合っているか確認
+        run: python scripts/screener.py
