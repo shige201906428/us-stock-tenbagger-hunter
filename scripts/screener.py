@@ -1,68 +1,78 @@
 import yfinance as yf
 import pandas as pd
-import datetime
+from datetime import datetime
 
-# 1. 調査したい銘柄リスト
-tickers = ["NVDA", "AAPL", "TSLA", "MSFT", "AMZN", "GOOGL", "META"]
-
-results = []
-
-print("スクリーニング開始...")
-
-for ticker in tickers:
+def check_tenbagger_potential(symbol):
     try:
-        stock = yf.Ticker(ticker)
-        # 直近のデータを取得
-        df = stock.history(period="5d")
+        stock = yf.Ticker(symbol)
+        info = stock.info
         
-        if df.empty:
-            continue
+        # 1. 時価総額チェック ($100M - $2B)
+        market_cap = info.get('marketCap', 0)
+        if not (100_000_000 <= market_cap <= 2_000_000_000):
+            return None
+
+        # 2. 売上高成長率 (直近)
+        financials = stock.financials
+        if 'Total Revenue' in financials.index and len(financials.columns) >= 2:
+            rev = financials.loc['Total Revenue']
+            growth = (rev.iloc[0] / rev.iloc[1]) - 1
+            if growth < 0.25:
+                return None
+        else:
+            return None
             
-        latest_price = df['Close'].iloc[-1]
-        prev_price = df['Close'].iloc[-2]
-        change = ((latest_price - prev_price) / prev_price) * 100
-        
-        results.append({
-            "銘柄": ticker,
-            "現在値": f"${latest_price:.2f}",
-            "前日比": f"{change:+.2f}%",
-            "更新日時": datetime.datetime.now().strftime("%Y-%m-%d %H:%M")
-        })
-        print(f"{ticker}: 取得成功")
-    except Exception as e:
-        print(f"{ticker}: エラー - {e}")
+        # 3. PSR (株価売上高倍率)
+        psr = info.get('priceToSalesTrailing12Months', 100)
+        if psr > 15: 
+            return None
 
-# 2. データフレーム作成
-df_results = pd.DataFrame(results)
+        return {
+            "Symbol": symbol,
+            "Name": info.get('shortName', 'N/A'),
+            "Growth": f"{growth:.2%}",
+            "PSR": f"{psr:.2f}",
+            "MarketCap": f"${market_cap/1e6:.1f}M",
+            "Price": f"${info.get('currentPrice', 0)}"
+        }
+    except:
+        return None
 
-# 3. HTMLファイルの生成 (index.html)
+# 解析対象のティッカーリスト
+ticker_list = ["PLTR", "CELH", "DUOL", "S", "IOT", "MNDY", "DOCN", "GTLB"]
+found_stocks = []
+
+for ticker in ticker_list:
+    result = check_tenbagger_potential(ticker)
+    if result:
+        found_stocks.append(result)
+
+df = pd.DataFrame(found_stocks)
+
+# HTML生成 (index.htmlとして書き出し)
 html_content = f"""
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>米国株スクリーニング結果</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <title>Tenbagger Candidate List</title>
     <style>
-        body {{ padding: 20px; background-color: #f8f9fa; }}
-        .container {{ background: white; padding: 30px; border-radius: 10px; shadow: 0 0 10px rgba(0,0,0,0.1); }}
+        body {{ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 40px; background-color: #f0f2f5; }}
+        h1 {{ color: #1a73e8; border-bottom: 2px solid #1a73e8; padding-bottom: 10px; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; background: white; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }}
+        th, td {{ padding: 15px; border: 1px solid #ddd; text-align: left; }}
+        th {{ background-color: #1a73e8; color: white; }}
+        tr:nth-child(even) {{ background-color: #f8f9fa; }}
+        .update-time {{ color: #5f6368; font-size: 0.9em; }}
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1 class="mb-4">米国株自動スクリーニング</h1>
-        <p>最終更新: {datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")} (JST)</p>
-        {df_results.to_html(index=False, classes='table table-hover table-bordered')}
-    </div>
+    <h1>米国株 10倍株候補スクリーナー</h1>
+    <p class="update-time">最終更新日時 (JST): {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}</p>
+    {df.to_html(index=False) if not df.empty else "<p>現在、条件に合致する銘柄はありません。</p>"}
 </body>
 </html>
 """
 
-# ファイル保存
 with open("index.html", "w", encoding="utf-8") as f:
     f.write(html_content)
-
-# CSVも保存
-df_results.to_csv("screening_results.csv", index=False)
-
-print("すべての処理が完了しました。")
