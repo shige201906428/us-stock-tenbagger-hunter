@@ -2,10 +2,9 @@ import yfinance as yf
 import pandas as pd
 from datetime import datetime
 import os
-import time
+import concurrent.futures
 
 def get_russell_2000_tickers():
-    """WikipediaからRussell 2000のリストを取得"""
     try:
         url = "https://en.wikipedia.org/wiki/List_of_Russell_2000_companies"
         tables = pd.read_html(url)
@@ -14,119 +13,93 @@ def get_russell_2000_tickers():
         return [t.replace('.', '-') for t in tickers]
     except Exception as e:
         print(f"List fetch error: {e}")
-        return ["PLTR", "CELH", "DUOL", "S", "IOT", "MNDY", "DOCN", "GTLB"]
+        return ["PLTR", "CELH", "DUOL", "S", "IOT", "MNDY"]
 
-def check_tenbagger_potential(symbol):
-    """超緩和スクリーニングロジック"""
+def process_stock(symbol):
+    """個別の財務分析を高速化するための並列処理用関数"""
     try:
         stock = yf.Ticker(symbol)
-        info = stock.info
+        # 財務諸表を取得（ここが一番時間がかかる）
+        fin = stock.financials
+        if 'Total Revenue' not in fin.index or len(fin.columns) < 2:
+            return None
         
-        # 1. 時価総額 ($50M - $5.0B)
+        rev = fin.loc['Total Revenue']
+        growth = (rev.iloc[0] / rev.iloc[1]) - 1
+        
+        # 条件: 成長率 5%以上
+        if growth < 0.05:
+            return None
+
+        info = stock.info
         mcap = info.get('marketCap', 0)
+        # 条件: 時価総額 $50M - $5B
         if not (50_000_000 <= mcap <= 5_000_000_000):
             return None
-
-        # 2. 売上高成長率 (5%以上)
-        financials = stock.financials
-        growth_val = 0
-        if 'Total Revenue' in financials.index and len(financials.columns) >= 2:
-            rev = financials.loc['Total Revenue']
-            growth_val = (rev.iloc[0] / rev.iloc[1]) - 1
-            if growth_val < 0.05: 
-                return None
-        else:
-            return None
             
-        # 3. 株価 ($1以上)
-        price = info.get('currentPrice', 0)
-        if price < 1.0:
-            return None
-
         return {
             "Symbol": symbol,
             "Name": info.get('shortName', 'N/A'),
-            "Sector": info.get('sector', 'N/A'),
-            "Growth": f"{growth_val:.2%}",
+            "Growth": f"{growth:.2%}",
             "PSR": f"{info.get('priceToSalesTrailing12Months', 0):.2f}",
             "MarketCap": f"${mcap/1e6:.1f}M",
-            "Price": f"${price}"
+            "Price": f"${info.get('currentPrice', 0)}"
         }
     except:
         return None
 
 # --- メイン処理 ---
 all_tickers = get_russell_2000_tickers()
-target_tickers = all_tickers[:500]
+target_tickers = all_tickers[:1000] # 1000社に設定
+
+print(f"Starting High-Speed Scan for {len(target_tickers)} stocks...")
 
 found_stocks = []
-print(f"Scanning {len(target_tickers)} Russell 2000 companies...")
+# ThreadPoolExecutorで並列処理を実行（速度を数倍にアップ）
+with concurrent.futures.ThreadPoolExecutor(max_workers=10) as executor:
+    results = list(executor.map(process_stock, target_tickers))
 
-for i, ticker in enumerate(target_tickers):
-    result = check_tenbagger_potential(ticker)
-    if result:
-        found_stocks.append(result)
-    if i % 15 == 0:
-        time.sleep(0.2)
+found_stocks = [r for r in results if r is not None]
 
 df = pd.DataFrame(found_stocks)
 
-# --- TradingView リンク生成ロジック (英語・汎用版) ---
+# --- TradingView リンク生成 (確実に開く形式) ---
 def make_tv_links(symbol):
-    # オーバービュー (詳細ページ) - 取引所プレフィックスを抜いて自動検索に任せる
+    # 検索リダイレクトを利用した最も安全なリンク
     ov_url = f"https://www.tradingview.com/symbols/{symbol}/"
-    # チャートページ
     ct_url = f"https://www.tradingview.com/chart/?symbol={symbol}"
-    
-    links = (
-        f'<a href="{ov_url}" target="_blank" class="tv-btn overview">Detail</a> '
-        f'<a href="{ct_url}" target="_blank" class="tv-btn chart">📈 Chart</a>'
-    )
-    return links
+    return f'<a href="{ov_url}" target="_blank" class="tv-btn detail">Detail</a> <a href="{ct_url}" target="_blank" class="tv-btn chart">📈</a>'
 
 if not df.empty:
-    # TradingView列を先頭に挿入
     df.insert(0, 'TradingView', df['Symbol'].apply(make_tv_links))
 
-# --- HTML生成 ---
+# --- HTML出力 ---
 update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 html_content = f"""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tenbagger Hunter Pro (US Link Edition)</title>
+    <title>Tenbagger Hunter 1000</title>
     <style>
-        body {{ font-family: 'Inter', sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }}
-        .container {{ max-width: 1200px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }}
-        h1 {{ color: #1e293b; font-size: 26px; border-left: 6px solid #2563eb; padding-left: 15px; }}
-        .update-time {{ color: #64748b; font-size: 13px; margin-bottom: 20px; }}
-        table {{ width: 100%; border-collapse: collapse; }}
-        th, td {{ padding: 12px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }}
-        th {{ background-color: #f8fafc; color: #475569; font-weight: 600; font-size: 12px; text-transform: uppercase; }}
-        tr:hover {{ background-color: #f1f5f9; }}
-        
-        .tv-btn {{ 
-            text-decoration: none; 
-            font-size: 12px; 
-            font-weight: bold; 
-            padding: 4px 8px; 
-            border-radius: 4px; 
-            display: inline-block;
-        }}
-        .overview {{ background-color: #2563eb; color: white; }}
-        .chart {{ background-color: #f1f5f9; color: #2563eb; border: 1px solid #2563eb; }}
-        .overview:hover {{ background-color: #1d4ed8; }}
-        .chart:hover {{ background-color: #2563eb; color: white; }}
+        body {{ font-family: 'Segoe UI', sans-serif; margin: 20px; background: #f9fafb; }}
+        .container {{ background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); }}
+        h1 {{ color: #1e40af; border-left: 5px solid #1e40af; padding-left: 15px; font-size: 24px; }}
+        table {{ width: 100%; border-collapse: collapse; margin-top: 20px; font-size: 13px; }}
+        th, td {{ padding: 12px; border-bottom: 1px solid #edf2f7; text-align: left; }}
+        th {{ background: #f8fafc; color: #475569; }}
+        tr:hover {{ background: #f1f5f9; }}
+        .tv-btn {{ text-decoration: none; font-weight: bold; padding: 4px 8px; border-radius: 4px; font-size: 11px; display: inline-block; }}
+        .detail {{ background: #1e40af; color: white; }}
+        .chart {{ border: 1px solid #1e40af; color: #1e40af; }}
     </style>
 </head>
 <body>
     <div class="container">
-        <h1>🚀 US Stock Tenbagger Screener</h1>
-        <p class="update-time">Last Update (UTC): {update_time} | Russell 2000 Scan</p>
+        <h1>🚀 Russell 1000 High-Speed Screener</h1>
+        <p style="font-size: 12px; color: #64748b;">Last Update: {update_time} (UTC) | 1000 Tickers Scanned</p>
         <div style="overflow-x: auto;">
-            {df.to_html(index=False, escape=False) if not df.empty else "<p>No candidates found.</p>"}
+            {df.to_html(index=False, escape=False) if not df.empty else "<p>No results found.</p>"}
         </div>
     </div>
 </body>
@@ -139,4 +112,4 @@ index_path = os.path.join(current_dir, "..", "index.html")
 with open(index_path, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print(f"Complete! Found {len(df)} candidates.")
+print(f"Scan complete. Found {len(df)} candidates.")
