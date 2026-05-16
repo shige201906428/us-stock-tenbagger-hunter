@@ -71,31 +71,32 @@ for i, ticker in enumerate(target_tickers):
 
 df = pd.DataFrame(found_stocks)
 
-# --- TradingView ダブルリンク生成ロジック ---
+# --- TradingView リンク生成ロジック (英語・汎用版) ---
 def make_tv_links(symbol):
-    # オーバービューリンク (詳細)
-    ov_url = f"https://jp.tradingview.com/symbols/AMEX-{symbol}/"
-    # チャートリンク (分析)
-    ct_url = f"https://jp.tradingview.com/chart/?symbol={symbol}"
+    # オーバービュー (詳細ページ) - 取引所プレフィックスを抜いて自動検索に任せる
+    ov_url = f"https://www.tradingview.com/symbols/{symbol}/"
+    # チャートページ
+    ct_url = f"https://www.tradingview.com/chart/?symbol={symbol}"
     
     links = (
-        f'<a href="{ov_url}" target="_blank" class="tv-btn overview">概要</a> '
-        f'<a href="{ct_url}" target="_blank" class="tv-btn chart">📈</a>'
+        f'<a href="{ov_url}" target="_blank" class="tv-btn overview">Detail</a> '
+        f'<a href="{ct_url}" target="_blank" class="tv-btn chart">📈 Chart</a>'
     )
     return links
 
 if not df.empty:
+    # TradingView列を先頭に挿入
     df.insert(0, 'TradingView', df['Symbol'].apply(make_tv_links))
 
 # --- HTML生成 ---
 update_time = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 html_content = f"""
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tenbagger Hunter Pro Max</title>
+    <title>Tenbagger Hunter Pro (US Link Edition)</title>
     <style>
         body {{ font-family: 'Inter', sans-serif; margin: 0; padding: 20px; background-color: #f4f7f6; color: #333; }}
         .container {{ max-width: 1200px; margin: auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }}
@@ -103,10 +104,9 @@ html_content = f"""
         .update-time {{ color: #64748b; font-size: 13px; margin-bottom: 20px; }}
         table {{ width: 100%; border-collapse: collapse; }}
         th, td {{ padding: 12px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; }}
-        th {{ background-color: #f8fafc; color: #475569; font-weight: 600; font-size: 12px; }}
+        th {{ background-color: #f8fafc; color: #475569; font-weight: 600; font-size: 12px; text-transform: uppercase; }}
         tr:hover {{ background-color: #f1f5f9; }}
         
-        /* リンクボタンのデザイン */
         .tv-btn {{ 
             text-decoration: none; 
             font-size: 12px; 
@@ -123,10 +123,10 @@ html_content = f"""
 </head>
 <body>
     <div class="container">
-        <h1>🚀 米国株 10倍株スクリーナー</h1>
-        <p class="update-time">最終更新(UTC): {update_time} | 条件: $50M-$5B / 成長率5%↑ / 価格$1↑</p>
+        <h1>🚀 US Stock Tenbagger Screener</h1>
+        <p class="update-time">Last Update (UTC): {update_time} | Russell 2000 Scan</p>
         <div style="overflow-x: auto;">
-            {df.to_html(index=False, escape=False) if not df.empty else "<p>該当銘柄なし</p>"}
+            {df.to_html(index=False, escape=False) if not df.empty else "<p>No candidates found.</p>"}
         </div>
     </div>
 </body>
@@ -139,4 +139,4 @@ index_path = os.path.join(current_dir, "..", "index.html")
 with open(index_path, "w", encoding="utf-8") as f:
     f.write(html_content)
 
-print(f"Update complete! {len(df)} candidates identified.")
+print(f"Complete! Found {len(df)} candidates.")
