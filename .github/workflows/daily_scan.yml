@@ -8,6 +8,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # 書き込み権限を許可する設定
+    permissions:
+      contents: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -23,3 +27,12 @@ jobs:
 
       - name: Run screener
         run: python scripts/screener.py
+
+      # 実行結果（CSV等）をリポジトリに自動保存する設定
+      - name: Commit and Push changes
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add .
+          git commit -m "Update screening results" || exit 0
+          git push
