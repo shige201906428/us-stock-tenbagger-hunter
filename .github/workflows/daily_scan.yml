@@ -1,13 +1,13 @@
 name: Tenbagger Hunter Daily Scan
+
 on:
   schedule:
-    - cron: '0 22 * * *' # UTC 22:00 (日本時間 7:00)
+    - cron: '0 22 * * *' # 日本時間 7:00
   workflow_dispatch:
 
 jobs:
   build:
     runs-on: ubuntu-latest
-    # リポジトリへの書き込み権限を明示的に付与
     permissions:
       contents: write
       
@@ -20,17 +20,16 @@ jobs:
           python-version: '3.10'
           
       - name: Install dependencies
-        run: pip install -r requirements.txt
+        # ここで必要なライブラリをすべて強制インストールします
+        run: pip install yfinance pandas lxml html5lib
         
       - name: Run Screener
-        # スクリプトを実行（index.htmlが生成される）
         run: python scripts/screener.py
         
       - name: Commit and Push
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          # csvだけでなく、生成された index.html も含めて保存
-          git add data/results.csv index.html
-          git commit -m "Auto-update: Found potential tenbaggers and updated HTML" || exit 0
+          git add index.html
+          git commit -m "Auto-update: 1000 stocks scanned and updated HTML" || exit 0
           git push
