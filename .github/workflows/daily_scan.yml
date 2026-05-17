@@ -2,7 +2,7 @@ name: Tenbagger Hunter Daily Scan
 
 on:
   schedule:
-    - cron: '0 22 * * *' # 日本時間 7:00
+    - cron: '0 21 * * *' # 日本時間 6:00
   workflow_dispatch:
 
 jobs:
